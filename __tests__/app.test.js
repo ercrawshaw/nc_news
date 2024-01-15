@@ -4,6 +4,7 @@ const db = require("../db/connection");
 const app = require("../data_handling/app");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index");
+const endpointData = require('../endpoints.json'); 
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -16,7 +17,16 @@ describe('errors', () => {
     })
 });
 
-
+describe('GET /api' , () => {
+    test('GET /api return with an object describing all the available endpoints on your API', () => {
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.endpointData).toEqual(endpointData)
+        })
+    })
+});
 
 describe('/api/topics' , () => {
     test('GET /api/topics status code: 200' , () => {
