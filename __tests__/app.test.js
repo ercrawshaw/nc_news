@@ -14,7 +14,9 @@ describe('errors', () => {
         .get('/api/bananas')
         .expect(404)
     })
-})
+});
+
+
 
 describe('/api/topics' , () => {
     test('GET /api/topics status code: 200' , () => {
@@ -34,6 +36,7 @@ describe('/api/topics' , () => {
         })
     })
 })
+
 
 
 
