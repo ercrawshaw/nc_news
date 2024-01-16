@@ -17,9 +17,6 @@ exports.returnCommentCount = ()  => {
     })
 };
 
-
-
-
 exports.fetchArticles = (countData) => {
 
     let query = `SELECT * FROM articles ORDER BY created_at DESC`;
@@ -62,4 +59,14 @@ exports.fetchArticlesById = (id, countData) => {
         
         
     })
-}
+};
+
+exports.fetchArticleComments = (id) => {
+    let query = "SELECT * FROM comments WHERE article_id=$1"
+
+    return db.query(query , [id]).then((result) => {
+        return result.rows
+    })
+};
+
+

@@ -83,6 +83,12 @@ describe('/api/articles', () => {
             expect(newArr).toBeSorted({ descending: true})
         })
     });
+    
+});
+
+
+
+describe('/api/articles/:article_id', () => {
     test('/api/articles/:article_id, return article with given id', () => {
         return request(app)
         .get('/api/articles/1')
@@ -115,8 +121,55 @@ describe('/api/articles', () => {
             expect(body.msg).toBe('Bad Request')
         })
     });
-})
+});
 
 
+
+describe('/api/articles/:article_id/comments', () => {
+    test('status:400 returns all comments for article' , () => {
+        return request(app)
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.comments.length).toBe(11)
+            body.comments.forEach((comment) => {
+                expect(typeof comment.comment_id).toBe('number');
+                expect(typeof comment.votes).toBe('number');
+                expect(typeof comment.created_at).toBe('string');
+                expect(typeof comment.author).toBe('string');
+                expect(typeof comment.body).toBe('string');
+                expect(typeof comment.article_id).toBe('number');
+            })
+        })
+    });
+    test('/api/articles/:article_id/comments, return in descending order by created_at', () => {
+        return request(app)
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then(({body}) => {
+            const newArr = [];
+            body.comments.forEach((comment) => {
+                newArr.push(comment.created_at) 
+            })
+            expect(newArr).toBeSorted({ descending: true})
+        })
+    });
+    test('/api/articles/notAnId/comments, return 404 for valid but non-existing Id', () => {
+        return request(app)
+        .get('/api/articles/999/comments')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('Not Found')
+        })
+    });
+    test('/api/articles/notAnId/comments, return 400 for a bad request', () => {
+        return request(app)
+        .get('/api/articles/BADREQUEST/comments')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('Bad Request')
+        })
+    });
+});
 
 
