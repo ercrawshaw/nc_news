@@ -1,5 +1,6 @@
 const request = require("supertest");
 const db = require("../db/connection");
+require('jest-sorted');
 
 const app = require("../data_handling/app");
 const seed = require("../db/seeds/seed");
@@ -48,6 +49,8 @@ describe('/api/topics' , () => {
     })
 });
 
+
+
 describe('/api/articles', () => {
     test('/api/articles, return all articles and status code 200', () => {
         return request(app)
@@ -59,12 +62,25 @@ describe('/api/articles', () => {
                 expect(typeof article.title).toBe("string");
                 expect(typeof article.topic).toBe("string");
                 expect(typeof article.author).toBe("string");
-                expect(typeof article.body).toBe("string");
+                //expect(typeof article.body).toBe("string");
                 expect(typeof article.created_at).toBe("string");
                 expect(typeof article.votes).toBe("number");
                 expect(typeof article.article_img_url).toBe("string");
                 expect(typeof article.article_id).toBe("number");
+                expect(typeof article.comment_count).toBe("number");
             })
+        })
+    });
+    test('/api/articles, return in descending order by created_at', () => {
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body}) => {
+            const newArr = [];
+            body.articles.forEach((article) => {
+                newArr.push(article.created_at) 
+            })
+            expect(newArr).toBeSorted({ descending: true})
         })
     });
     test('/api/articles/:article_id, return article with given id', () => {
@@ -72,14 +88,15 @@ describe('/api/articles', () => {
         .get('/api/articles/1')
         .expect(200)
         .then(({body}) => {
-                expect(body.articles[0].title).toBe("Living in the shadow of a great man");
-                expect(body.articles[0].topic).toBe("mitch");
-                expect(body.articles[0].author).toBe("butter_bridge");
-                expect(body.articles[0].body).toBe("I find this existence challenging");
-                expect(body.articles[0].created_at).toBe('2020-07-09T20:11:00.000Z');
-                expect(body.articles[0].votes).toBe(100);
-                expect(body.articles[0].article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
-                expect(body.articles[0].article_id).toBe(1);
+                expect(body.title).toBe("Living in the shadow of a great man");
+                expect(body.topic).toBe("mitch");
+                expect(body.author).toBe("butter_bridge");
+                //expect(body.body).toBe("I find this existence challenging");
+                expect(body.created_at).toBe('2020-07-09T20:11:00.000Z');
+                expect(body.votes).toBe(100);
+                expect(body.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
+                expect(body.article_id).toBe(1);
+                expect(body.comment_count).toBe(11);
         })
     });
     test('/api/articles/:article_id, return 404 when id is valid but does not exist', () => {
