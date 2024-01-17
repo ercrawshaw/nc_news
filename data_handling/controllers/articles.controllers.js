@@ -1,5 +1,5 @@
-const {fetchArticles , returnCommentCount , fetchArticlesById } = require('../models/articles.models');
-const {fetchCommentsByArticleId } = require('../models/comments.models');
+const {fetchArticles , returnCommentCount , fetchArticlesById , checkArticle} = require('../models/articles.models');
+const {fetchCommentsByArticleId , addComment} = require('../models/comments.models');
 
 
 exports.getArticles = (req, res, next) => {
@@ -42,7 +42,25 @@ exports.getArticleComments = (req, res, next) => {
     })
     .catch((err) => {
         next(err)
-    })
+    })  
+};
 
-    
-}
+exports.postArticleComment = (req, res, next) => {
+    const id = req.params.article_id;
+    const body = req.body;
+    const promises = [addComment(id, body), checkArticle(id)];
+    Promise.all(promises)
+      .then((promises) => {
+        res.status(201).send({ comment: promises[0] });
+      })
+      .catch((err) => {
+        if (err.code === '23502') {
+            err.msg = 'Bad Request'
+            next(err);
+        }else{
+            next(err)
+        }
+        
+      });
+  };
+
