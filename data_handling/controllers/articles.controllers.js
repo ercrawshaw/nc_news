@@ -1,4 +1,4 @@
-const {fetchArticles , returnCommentCount , fetchArticlesById , checkArticle} = require('../models/articles.models');
+const {fetchArticles , returnCommentCount , fetchArticlesById , checkArticle , findVoteCount , updateVoteCount } = require('../models/articles.models');
 const {fetchCommentsByArticleId , addComment} = require('../models/comments.models');
 
 
@@ -63,4 +63,21 @@ exports.postArticleComment = (req, res, next) => {
         
       });
   };
+
+  exports.patchArticleVotes = (req, res, next) => {
+    const voteInc = req.body.inc_votes;
+    const id = req.params.article_id;
+    
+    findVoteCount(id, voteInc).then((newCount) => {
+        updateVoteCount(id , newCount).then(({rows}) => {
+           res.status(201).send(rows[0]); 
+        })
+    })
+    .catch((err) => {
+        console.log(err, "<=== error")
+        next(err)
+    })
+  };
+
+  
 

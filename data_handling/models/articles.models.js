@@ -81,4 +81,30 @@ exports.checkArticle = (id) => {
       });
   };
 
+ exports.findVoteCount = (id , voteInc) => {
+    
+    if (typeof voteInc !== 'number') {
+        return Promise.reject({status:400, msg:'Bad Request'})
+    };
+
+    return db.query(`SELECT * FROM articles WHERE article_id = $1`, [id]).then(({rows}) => {
+        if (rows.length ===0) {
+            return Promise.reject({status:404, msg:'Not Found'})
+        }else{
+            let voteValue = rows[0].votes;
+            voteValue += voteInc 
+        
+            return voteValue  
+        } 
+    })
+ };
+
+ exports.updateVoteCount = (id , newCount) => {
+    return db.query(`UPDATE articles SET votes=${newCount} WHERE article_id=${id}`).then(({rows}) => {
+        return db.query(`SELECT * FROM articles WHERE article_id=${id}`)
+    })
+ }
+
+
+
 

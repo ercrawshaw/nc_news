@@ -165,7 +165,7 @@ describe('/api/articles/:article_id/comments', () => {
     });
 });
 
-describe("Post api/articles/id/comment ", () => {
+describe("POST api/articles/id/comment ", () => {
     test("returns posted comment if a valid username is provided", () => {
       const input = { username: "icellusedkars", body: "The username thing had me stumped!" };
 
@@ -233,7 +233,80 @@ describe("Post api/articles/id/comment ", () => {
     });
 });
 
-
+describe('PATCH /api/articles/:article_id', () => {
+    test('status:200 return updated article with altered positive votes', () => {
+        const input = { inc_votes : 1 };
+        return request(app)
+        .patch('/api/articles/2')
+        .send(input)
+        .expect(201)
+        .then(({body}) => {
+            expect(body.title).toBe("Sony Vaio; or, The Laptop");
+            expect(body.topic).toBe("mitch");
+            expect(body.author).toBe("icellusedkars");
+            expect(typeof body.body).toBe("string");
+            expect(typeof body.created_at).toBe("string");
+            expect(body.votes).toBe(1);
+            expect(typeof body.article_img_url).toBe("string");
+        })
+    });
+    test('status:200 return updated article with altered negative votes', () => {
+        const input = { inc_votes : -150 };
+        return request(app)
+        .patch('/api/articles/1')
+        .send(input)
+        .expect(201)
+        .then(({body}) => {
+            expect(body.title).toBe("Living in the shadow of a great man");
+            expect(body.topic).toBe("mitch");
+            expect(body.author).toBe("butter_bridge");
+            expect(typeof body.body).toBe("string");
+            expect(typeof body.created_at).toBe("string");
+            expect(body.votes).toBe(-50);
+            expect(typeof body.article_img_url).toBe("string");
+        })
+    });
+    test('status:404 when article does not exist - valid but non-existent id', () => {
+        const input = { inc_votes : 3 };
+        return request(app)
+        .patch('/api/articles/999')
+        .send(input)
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('Not Found')
+        })
+    });
+    test('status:400 when article does not exist - invalid id', () => {
+        const input = { inc_votes : 3 };
+        return request(app)
+        .patch('/api/articles/bananas')
+        .send(input)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('Bad Request')
+        })
+    });
+    test('status:400 when inputted with invalid value', () => {
+        const input = { inc_votes : 'blue' };
+        return request(app)
+        .patch('/api/articles/1')
+        .send(input)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('Bad Request')
+        })
+    });
+    test('status:400 when inputted with no value', () => {
+        const input = {};
+        return request(app)
+        .patch('/api/articles/1')
+        .send(input)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('Bad Request')
+        })
+    });
+});
 
 
 
