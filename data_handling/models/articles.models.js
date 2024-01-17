@@ -69,4 +69,16 @@ exports.fetchArticleComments = (id) => {
     })
 };
 
+exports.checkArticle = (id) => {
+    return db
+      .query(`SELECT * FROM articles WHERE article_id = $1;`, [id])
+      .then(({rows}) => {
+        if (rows.length === 0) {
+            Promise.reject(err)
+        }else{
+           return rows[0]; 
+        }
+      });
+  };
+
 
