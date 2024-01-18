@@ -74,7 +74,6 @@ exports.postArticleComment = (req, res, next) => {
         })
     })
     .catch((err) => {
-        console.log(err, "<=== error")
         next(err)
     })
   };
