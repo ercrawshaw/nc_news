@@ -308,5 +308,41 @@ describe('PATCH /api/articles/:article_id', () => {
     });
 });
 
+describe('DELETE /api/comments/:comment_id', () => {
+    test('delete comment by comment_id and return 204', () => {
+        return request(app)
+        .delete('/api/comments/2')
+        .expect(204)
+        .then(() => {
+            return request(app)
+            .get('/api/articles/1/comments')
+            .then(({body}) => {
+                expect(body.comments.length).toBe(10)
+                body.comments.forEach((comment) => {
+                    expect(comment.article_id).not.toBe(2);
+                })
+            })
+        })
+    });
+    test('status 404 when valid but non-existing comment_id', () => {
+        return request(app)
+        .delete('/api/comments/999')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('Not Found')
+        })
+    });
+    test('status 400 when invalid comment_id', () => {
+        return request(app)
+        .delete('/api/comments/banana')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('Bad Request')
+        })
+    });
+});
+
+
+
 
 
