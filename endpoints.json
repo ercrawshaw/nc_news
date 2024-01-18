@@ -95,6 +95,11 @@
       ]
     }
   },
+  "DELETE /api/comments/:comment_id":{
+    "description": "deletes comment and returns nothing",
+    "queries": [],
+    "exampleResponse": "nothing"
+  },
   "GET /api/users": {
     "description": "serves an array of all users",
     "queries": ["username", "name", "avatar_url"],

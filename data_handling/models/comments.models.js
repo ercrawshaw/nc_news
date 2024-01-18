@@ -18,8 +18,8 @@ exports.fetchCommentsByArticleId = (id) => {
 
 
 exports.addComment = (id, data) => {
-    const username = data.username;
-    const body = data.body;
+    const {username} = data;
+    const {body} = data;
   
     return db
       .query(
@@ -30,5 +30,20 @@ exports.addComment = (id, data) => {
         return rows[0];
       });
   };
+
+  exports.removeCommentById = (commentId) => {
+    
+    const query = "DELETE FROM comments WHERE comment_id=$1;"
+
+    return db.query(query, [commentId])
+  };
+
+  exports.fetchCommentsById = (commentId) => {
+     return db.query('SELECT * FROM comments WHERE comment_id=$1', [commentId]).then(({rows}) => {
+      if (rows.length === 0) {
+        return Promise.reject({status:404, msg:'Not Found'})
+      }
+     })
+  }
 
 

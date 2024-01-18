@@ -18,7 +18,7 @@ exports.getArticles = (req, res, next) => {
 };
 
 exports.getArticlesById = (req, res, next) => {
-    const id = req.params.id
+    const {id} = req.params
 
     returnCommentCount().then((countData) => {
         return countData
@@ -35,9 +35,9 @@ exports.getArticlesById = (req, res, next) => {
 };
 
 exports.getArticleComments = (req, res, next) => {
-    const id = req.params.article_id;
+    const {article_id} = req.params;
 
-    fetchCommentsByArticleId(id).then((comments) => {
+    fetchCommentsByArticleId(article_id).then((comments) => {
        return res.status(200).send({comments}) 
     })
     .catch((err) => {
@@ -46,9 +46,9 @@ exports.getArticleComments = (req, res, next) => {
 };
 
 exports.postArticleComment = (req, res, next) => {
-    const id = req.params.article_id;
-    const body = req.body;
-    const promises = [addComment(id, body), checkArticle(id)];
+    const {article_id} = req.params;
+    const {body} = req;
+    const promises = [addComment(article_id, body), checkArticle(article_id)];
     Promise.all(promises)
       .then((promises) => {
         res.status(201).send({ comment: promises[0] });
@@ -65,11 +65,11 @@ exports.postArticleComment = (req, res, next) => {
   };
 
   exports.patchArticleVotes = (req, res, next) => {
-    const voteInc = req.body.inc_votes;
-    const id = req.params.article_id;
+    const {inc_votes} = req.body;
+    const {article_id} = req.params;
     
-    findVoteCount(id, voteInc).then((newCount) => {
-        updateVoteCount(id , newCount).then(({rows}) => {
+    findVoteCount(article_id, inc_votes).then((newCount) => {
+        updateVoteCount(article_id , newCount).then(({rows}) => {
            res.status(201).send(rows[0]); 
         })
     })
