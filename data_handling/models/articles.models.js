@@ -2,6 +2,7 @@ const db = require('../../db/connection');
 
 
 
+
 exports.returnCommentCount = ()  => {
     let query = `SELECT COUNT(comment_id), article_id
     FROM comments
@@ -103,7 +104,14 @@ exports.checkArticle = (id) => {
     return db.query(`UPDATE articles SET votes=${newCount} WHERE article_id=${id}`).then(({rows}) => {
         return db.query(`SELECT * FROM articles WHERE article_id=${id}`)
     })
- }
+ };
+
+ exports.returnArticlesByTopic = (topic) => {
+
+            return db.query('SELECT * FROM articles WHERE topic=$1', [topic]).then(({rows}) => {
+            return rows
+        }) 
+ };
 
 
 

@@ -82,6 +82,36 @@ describe('/api/articles', () => {
     
 });
 
+describe('GET /api/articles topic query', () => {
+    test('respond with articles in topic', () => {
+        return request(app)
+        .get('/api/articles?topic=mitch')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.articles.length).toBe(12)
+            body.articles.forEach((article) => {
+                expect(article.topic).toBe('mitch')
+            })
+        })
+    });
+    test('respond with empty array when topic exists but no articles match', () => {
+        return request(app)
+        .get('/api/articles?topic=paper')
+        .expect(200)
+        .then(({body:{articles}}) => {
+            expect(Array.isArray(articles)).toBe(true)
+            expect(articles.length).toBe(0)
+        })
+    });
+    test('respond with 404 when topic does not exist', () => {
+        return request(app)
+        .get('/api/articles?topic=cake')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('Not Found')
+        })
+    });
+});
 
 
 describe('/api/articles/:article_id', () => {
@@ -342,6 +372,13 @@ describe('GET /api/users', () => {
         })
     })
 });
+
+// FEATURE REQUEST The endpoint should also accept the following query:
+
+// topic, which filters the articles by the topic value specified in the query. If the query is omitted, the endpoint should respond with all articles.
+// Consider what errors could occur with this endpoint, and make sure to test for them.
+
+// You should not have to amend any previous tests.
 
 
 
