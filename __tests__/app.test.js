@@ -49,8 +49,6 @@ describe('/api/topics' , () => {
     })
 });
 
-
-
 describe('/api/articles', () => {
     test('/api/articles, return all articles and status code 200', () => {
         return request(app)
@@ -113,7 +111,6 @@ describe('GET /api/articles topic query', () => {
     });
 });
 
-
 describe('/api/articles/:article_id', () => {
     test('GET /api/articles/:article_id, return article with given id', () => {
         return request(app)
@@ -149,9 +146,18 @@ describe('/api/articles/:article_id', () => {
     });
 });
 
+describe('GET /api/articles/:article_id/?comments=true' , () => {
+    test('status:200 return the comment count of article' , () => {
+        return request(app)
+        .get('/api/articles/1/?comments=true')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.comment_count).toBe(11);
+        })
+    });
+});
 
-
-describe('/api/articles/:article_id/comments', () => {
+describe('GET /api/articles/:article_id/comments', () => {
     test('status:400 returns all comments for article' , () => {
         return request(app)
         .get('/api/articles/1/comments')
@@ -372,13 +378,6 @@ describe('GET /api/users', () => {
         })
     })
 });
-
-// FEATURE REQUEST The endpoint should also accept the following query:
-
-// topic, which filters the articles by the topic value specified in the query. If the query is omitted, the endpoint should respond with all articles.
-// Consider what errors could occur with this endpoint, and make sure to test for them.
-
-// You should not have to amend any previous tests.
 
 
 

@@ -1,4 +1,4 @@
-const {fetchArticles , returnCommentCount , fetchArticlesById , checkArticle , findVoteCount , updateVoteCount , returnArticlesByTopic } = require('../models/articles.models');
+const {fetchArticles , returnCommentCount , fetchArticlesById , checkArticle , findVoteCount , updateVoteCount , returnArticlesByTopic, fetchArticleComments } = require('../models/articles.models');
 const {fetchCommentsByArticleId , addComment} = require('../models/comments.models');
 
 const { checkTopicExists } = require('../models/topics.models')
@@ -35,14 +35,21 @@ exports.getArticles = (req, res, next) => {
 };
 
 exports.getArticlesById = (req, res, next) => {
-    const {id} = req.params
+    const {comments} = req.query;
+    const {id} = req.params;
 
     returnCommentCount().then((countData) => {
         return countData
     })
     .then((countData) => {
        fetchArticlesById(id, countData).then((articles) => {
+        if (comments) {
+            const {comment_count} = articles[0]
+            return res.status(200).send({comment_count})
+        }else{
             return res.status(200).send(articles[0])
+        }
+            
         })
         .catch((err) => {
             next(err)
