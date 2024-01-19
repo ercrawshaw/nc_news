@@ -18,11 +18,30 @@ exports.returnCommentCount = ()  => {
     })
 };
 
-exports.fetchArticles = (countData) => {
+exports.fetchArticles = (countData, sort_by = 'created_at DESC', order) => {
 
-    let query = `SELECT * FROM articles ORDER BY created_at DESC`;
+    console.log(order)
 
-    return db.query(query).then((result) => {
+    if(order) {
+        if (order === 'ASC' || order === 'DESC') {
+            sort_by = `created_at ${order}`
+        }else{
+            return Promise.reject({status:400, msg:'Bad Request'})
+        }
+    }
+
+    let splitSortBy = sort_by.split(" ")[0];
+    
+    const validSortQuery = ['title', 'topic', 'author', 'created_at', 'votes', 'article_img_url', 'article_id'];
+
+    if (!validSortQuery.includes(splitSortBy) ) {
+        return Promise.reject({status:404, msg:'Not Found'})
+    }else if (!sort_by.includes('DESC') && !sort_by.includes('ASC')) {
+        sort_by += " DESC"   
+    };
+
+
+    return db.query(`SELECT * FROM articles ORDER BY ${sort_by}`).then((result) => {
        
         
         result.rows.forEach((article) => {
@@ -35,8 +54,8 @@ exports.fetchArticles = (countData) => {
                 }
             }
         })
+
         return result.rows 
-    
 })
 };
 

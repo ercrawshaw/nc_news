@@ -69,7 +69,7 @@ describe('/api/articles', () => {
             })
         })
     });
-    test('GET /api/articles, return in descending order by created_at', () => {
+    test('GET /api/articles, return in descending order by default created_at', () => {
         return request(app)
         .get('/api/articles')
         .expect(200)
@@ -77,7 +77,54 @@ describe('/api/articles', () => {
             expect(body.articles).toBeSortedBy('created_at', { descending: true}) 
         })
     });
-    
+    test('GET /api/articles?sort_by=valid_column, return in default descending order by valid_column', () => {
+        return request(app)
+        .get('/api/articles?sort_by=title')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.articles).toBeSortedBy('title', { descending: true}) 
+        })
+    });
+    test('GET /api/articles?sort_by=valid_column ASC, return in descending order by valid_column', () => {
+        return request(app)
+        .get('/api/articles?sort_by=author ASC')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.articles).toBeSortedBy('author', { descending: false}) 
+        })
+    });
+    test('GET /api/articles?sort_by=invalid_column returns 404 Not Found', () => {
+        return request(app)
+        .get('/api/articles?sort_by=cake')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('Not Found') 
+        })
+    });
+    test('GET /api/articles?order=ASC returns default created_at in ASC', () => {
+        return request(app)
+        .get('/api/articles?order=ASC')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.articles).toBeSortedBy('created_at', { descending: false}) 
+        })
+    });
+    test('GET /api/articles?order=ASC returns default created_at in DESC', () => {
+        return request(app)
+        .get('/api/articles?order=DESC')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.articles).toBeSortedBy('created_at', { descending: true}) 
+        })
+    });
+    test('GET /api/articles?order=invalid_query returns 400 Bad Request', () => {
+        return request(app)
+        .get('/api/articles?order=cake')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('Bad Request')
+        })
+    });
 });
 
 describe('GET /api/articles topic query', () => {

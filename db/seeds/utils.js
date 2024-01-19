@@ -20,3 +20,12 @@ exports.formatComments = (comments, idLookup) => {
     };
   });
 };
+
+exports.getSortBy = (sort_by) => {
+  const splitSort = sort_by.split(" ");
+  if (splitSort[1]) {
+    return sort_by
+  }else{
+    return sort_by + " DESC"
+  }
+};

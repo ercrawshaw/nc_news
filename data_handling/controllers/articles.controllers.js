@@ -1,12 +1,12 @@
 const {fetchArticles , returnCommentCount , fetchArticlesById , checkArticle , findVoteCount , updateVoteCount , returnArticlesByTopic, fetchArticleComments } = require('../models/articles.models');
 const {fetchCommentsByArticleId , addComment} = require('../models/comments.models');
-
-const { checkTopicExists } = require('../models/topics.models')
+const { checkTopicExists } = require('../models/topics.models');
+const { getSortBy } = require('../../db/seeds/utils');
 
 
 exports.getArticles = (req, res, next) => {
-    const {topic} = req.query;
-    
+    const {topic , sort_by, order} = req.query;
+
     if(topic) {
         const promises = [checkTopicExists(topic), returnArticlesByTopic(topic)];
         Promise.all(promises).then((result) => {
@@ -17,12 +17,13 @@ exports.getArticles = (req, res, next) => {
             next(err)
           })
     };
+
     
     returnCommentCount().then((countData) => {
         return countData
     })
     .then((countData) => {
-        fetchArticles(countData).then((articles) => {
+        fetchArticles(countData, sort_by, order).then((articles) => {
             return res.status(200).send({articles})
         })
         .catch((err) => {
