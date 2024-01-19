@@ -35,7 +35,6 @@ exports.getArticles = (req, res, next) => {
 };
 
 exports.getArticlesById = (req, res, next) => {
-    const {comments} = req.query;
     const {id} = req.params;
 
     returnCommentCount().then((countData) => {
@@ -43,12 +42,8 @@ exports.getArticlesById = (req, res, next) => {
     })
     .then((countData) => {
        fetchArticlesById(id, countData).then((articles) => {
-        if (comments) {
-            const {comment_count} = articles[0]
-            return res.status(200).send({comment_count})
-        }else{
+        
             return res.status(200).send(articles[0])
-        }
             
         })
         .catch((err) => {

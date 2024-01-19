@@ -60,4 +60,3 @@ To run the tests to the database use command
 
 An available list of endpoints are available in the endpoints.json file.
 
-

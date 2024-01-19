@@ -146,17 +146,6 @@ describe('/api/articles/:article_id', () => {
     });
 });
 
-describe('GET /api/articles/:article_id/?comments=true' , () => {
-    test('status:200 return the comment count of article' , () => {
-        return request(app)
-        .get('/api/articles/1/?comments=true')
-        .expect(200)
-        .then(({body}) => {
-            expect(body.comment_count).toBe(11);
-        })
-    });
-});
-
 describe('GET /api/articles/:article_id/comments', () => {
     test('status:400 returns all comments for article' , () => {
         return request(app)
