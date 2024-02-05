@@ -1,5 +1,9 @@
+const cors = require('cors');
 const express = require("express");
 const app = express();
+const apiRouter = require('./api-router');
+
+app.use(cors());
 
 app.use(express.json());
 
@@ -8,6 +12,8 @@ const { getArticles , getArticlesById , getArticleComments , postArticleComment 
 const { deleteCommentById } = require('./controllers/comments.controllers');
 const { getUsers } = require('./controllers/users.controllers');
 
+
+app.use('/api', apiRouter);
 
 app.get('/api', getEndpoints);
 
