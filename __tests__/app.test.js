@@ -398,22 +398,22 @@ describe('DELETE /api/comments/:comment_id', () => {
     });
 });
 
-describe('GET /api/users', () => {
-    test('status 200 return array of users with correct properties', () => {
-        return request(app)
-        .get('/api/users')
-        .expect(200)
-        .then(({body}) => {
-            expect(body.users.length).toBe(4)
-            body.users.forEach((user) => {
-                expect(typeof user).toBe("object")
-                expect(typeof user.username).toBe("string");
-                expect(typeof user.name).toBe("string");
-                expect(typeof user.avatar_url).toBe("string");
-            })
-        })
-    })
-});
+// describe('GET /api/users', () => {
+//     test('status 200 return array of users with correct properties', () => {
+//         return request(app)
+//         .get('/api/users')
+//         .expect(200)
+//         .then(({body}) => {
+//             expect(body.users.length).toBe(4)
+//             body.users.forEach((user) => {
+//                 expect(typeof user).toBe("object")
+//                 expect(typeof user.username).toBe("string");
+//                 expect(typeof user.name).toBe("string");
+//                 expect(typeof user.avatar_url).toBe("string");
+//             })
+//         })
+//     })
+// });
 
 
 

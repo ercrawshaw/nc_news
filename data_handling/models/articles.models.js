@@ -20,7 +20,7 @@ exports.returnCommentCount = ()  => {
 
 exports.fetchArticles = (countData, sort_by = 'created_at DESC', order) => {
 
-    console.log(order)
+    
 
     if(order) {
         if (order === 'ASC' || order === 'DESC') {
