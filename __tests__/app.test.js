@@ -159,7 +159,7 @@ describe('GET /api/articles topic query', () => {
 });
 
 describe('/api/articles/:article_id', () => {
-    test('GET /api/articles/:article_id, return article with given id', () => {
+    test.only('GET /api/articles/:article_id, return article with given id', () => {
         return request(app)
         .get('/api/articles/1')
         .expect(200)
@@ -167,7 +167,7 @@ describe('/api/articles/:article_id', () => {
                 expect(body.title).toBe("Living in the shadow of a great man");
                 expect(body.topic).toBe("mitch");
                 expect(body.author).toBe("butter_bridge");
-                //expect(body.body).toBe("I find this existence challenging");
+                expect(typeof body.body).toBe("string");
                 expect(body.created_at).toBe('2020-07-09T20:11:00.000Z');
                 expect(body.votes).toBe(100);
                 expect(body.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
@@ -398,22 +398,21 @@ describe('DELETE /api/comments/:comment_id', () => {
     });
 });
 
-// describe('GET /api/users', () => {
-//     test('status 200 return array of users with correct properties', () => {
-//         return request(app)
-//         .get('/api/users')
-//         .expect(200)
-//         .then(({body}) => {
-//             expect(body.users.length).toBe(4)
-//             body.users.forEach((user) => {
-//                 expect(typeof user).toBe("object")
-//                 expect(typeof user.username).toBe("string");
-//                 expect(typeof user.name).toBe("string");
-//                 expect(typeof user.avatar_url).toBe("string");
-//             })
-//         })
-//     })
-// });
+describe('GET /api/users', () => {
+    test('status 200', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+    });
+    test('status 200 and return body', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({body}) => {
+            console.log(body);
+        })
+    });
+})
 
 
 

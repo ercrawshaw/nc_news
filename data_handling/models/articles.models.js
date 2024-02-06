@@ -45,7 +45,7 @@ exports.fetchArticles = (countData, sort_by = 'created_at DESC', order) => {
        
         
         result.rows.forEach((article) => {
-            delete article.body
+            
             article.comment_count = 0;
             for (let i=0; i<countData.length; i++) {
                 if (countData[i].article_id === article.article_id) {
@@ -65,16 +65,19 @@ exports.fetchArticlesById = (id, countData) => {
 
     return db.query(query,[id]).then((result) => {
         
+        
         if (result.rows.length === 0) {
             return Promise.reject({status:404, msg:'Not Found'})
         }else{
-            delete result.rows[0].body
+            
             for (let i=0; i<countData.length; i++) {
                 if (countData[i].article_id === result.rows[0].article_id) {
                     result.rows[0].comment_count = Number(countData[i].count)
                 }
             }
+            
           return result.rows  
+          
         }
         
         
