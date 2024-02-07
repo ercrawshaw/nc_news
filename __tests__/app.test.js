@@ -159,7 +159,7 @@ describe('GET /api/articles topic query', () => {
 });
 
 describe('/api/articles/:article_id', () => {
-    test.only('GET /api/articles/:article_id, return article with given id', () => {
+    test('GET /api/articles/:article_id, return article with given id', () => {
         return request(app)
         .get('/api/articles/1')
         .expect(200)
@@ -305,6 +305,21 @@ describe("POST api/articles/id/comment ", () => {
     });
 });
 
+
+describe('PATCH /api/comments/:comment_id', () => {
+    test('status:201 return updated comment with altered positive votes', () => {
+        const input = { inc_votes : 1 };
+        return request(app)
+        .patch('/api/comments/1')
+        .send(input)
+        .expect(201)
+        .then(({body}) => {
+            expect(body[0].votes).toBe(17);    
+        })
+    });
+});
+
+
 describe('PATCH /api/articles/:article_id', () => {
     test('status:200 return updated article with altered positive votes', () => {
         const input = { inc_votes : 1 };
@@ -409,7 +424,6 @@ describe('GET /api/users', () => {
         .get('/api/users')
         .expect(200)
         .then(({body}) => {
-            console.log(body);
         })
     });
 })

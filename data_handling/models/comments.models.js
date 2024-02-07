@@ -44,6 +44,26 @@ exports.addComment = (id, data) => {
         return Promise.reject({status:404, msg:'Not Found'})
       }
      })
-  }
+  };
+
+  exports.updateCommentVoteCount = (id, incVote) => {
+
+
+    if (typeof incVote !== 'number') {
+      return Promise.reject({status:400, msg:'Bad Request'})
+  };
+
+  return db.query(`SELECT * FROM comments WHERE comment_id = $1`, [id]).then(({rows}) => {
+
+      if (rows.length === 0) {
+          return Promise.reject({status:404, msg:'Not Found'})
+      }else{
+
+          rows[0].votes += incVote
+          
+          return rows 
+      } 
+  })
+  };
 
 
