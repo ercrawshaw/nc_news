@@ -46,24 +46,28 @@ exports.addComment = (id, data) => {
      })
   };
 
-  exports.updateCommentVoteCount = (id, incVote) => {
 
+  exports.findCommentVoteCount = (id , voteInc) => {
+    
+    if (typeof voteInc !== 'number') {
+        return Promise.reject({status:400, msg:'Bad Request'})
+    };
 
-    if (typeof incVote !== 'number') {
-      return Promise.reject({status:400, msg:'Bad Request'})
-  };
+    return db.query(`SELECT * FROM comments WHERE comment_id = $1`, [id]).then(({rows}) => {
+        if (rows.length ===0) {
+            return Promise.reject({status:404, msg:'Not Found'})
+        }else{
+            let voteValue = rows[0].votes;
+            voteValue += voteInc 
+        
+            return voteValue  
+        } 
+    })
+ };
 
-  return db.query(`SELECT * FROM comments WHERE comment_id = $1`, [id]).then(({rows}) => {
-
-      if (rows.length === 0) {
-          return Promise.reject({status:404, msg:'Not Found'})
-      }else{
-
-          rows[0].votes += incVote
-          
-          return rows 
-      } 
+ exports.updateCommentVoteCount = (id , newCount) => {
+  return db.query(`UPDATE comments SET votes=${newCount} WHERE comment_id=${id}`).then(({rows}) => {
+      return db.query(`SELECT * FROM comments WHERE comment_id=${id}`)
   })
-  };
-
+};
 

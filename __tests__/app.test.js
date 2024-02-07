@@ -314,7 +314,7 @@ describe('PATCH /api/comments/:comment_id', () => {
         .send(input)
         .expect(201)
         .then(({body}) => {
-            expect(body[0].votes).toBe(17);    
+            expect(body.votes).toBe(17);    
         })
     });
 });
