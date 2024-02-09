@@ -1,12 +1,12 @@
-const {fetchArticles , returnCommentCount , fetchArticlesById , checkArticle , findVoteCount , updateVoteCount , returnArticlesByTopic, fetchArticleComments } = require('../models/articles.models');
+const {fetchArticles , returnCommentCount , fetchArticlesById , checkArticle , findVoteCount , updateVoteCount , returnArticlesByTopic, fetchArticleComments, addArticleComments, fetchTopicArticles } = require('../models/articles.models');
 const {fetchCommentsByArticleId , addComment} = require('../models/comments.models');
 const { checkTopicExists } = require('../models/topics.models');
 const { getSortBy } = require('../../db/seeds/utils');
 
 
 exports.getArticles = (req, res, next) => {
+    
     const {topic , sort_by, order} = req.query;
-
     if(topic) {
         const promises = [checkTopicExists(topic), returnArticlesByTopic(topic)];
         Promise.all(promises).then((result) => {
@@ -17,13 +17,20 @@ exports.getArticles = (req, res, next) => {
             next(err)
           })
     };
-
     
     returnCommentCount().then((countData) => {
         return countData
     })
     .then((countData) => {
+
+        if (sort_by === "count") {
+            addArticleComments(countData).then((result) => {
+                console.log(result);
+            })
+        }
+
         fetchArticles(countData, sort_by, order).then((articles) => {
+            
             return res.status(200).send({articles})
         })
         .catch((err) => {
@@ -97,6 +104,17 @@ exports.postArticleComment = (req, res, next) => {
         next(err)
     })
   };
+
+  exports.getArticlesByTopic = (req, res, next) => {
+    const {topic} = req.params;
+    const {sort_by} = req.query;
+
+    fetchTopicArticles(topic, sort_by)
+    .then((result) => {
+        res.status(200).send(result)
+    })
+    
+  }
 
   
 

@@ -20,8 +20,6 @@ exports.returnCommentCount = ()  => {
 
 exports.fetchArticles = (countData, sort_by = 'created_at DESC', order) => {
 
-    
-
     if(order) {
         if (order === 'ASC' || order === 'DESC') {
             sort_by = `created_at ${order}`
@@ -32,7 +30,7 @@ exports.fetchArticles = (countData, sort_by = 'created_at DESC', order) => {
 
     let splitSortBy = sort_by.split(" ")[0];
     
-    const validSortQuery = ['title', 'topic', 'author', 'created_at', 'votes', 'article_img_url', 'article_id'];
+    const validSortQuery = ['title', 'topic', 'author', 'created_at', 'votes', 'article_img_url', 'article_id', 'count'];
 
     if (!validSortQuery.includes(splitSortBy) ) {
         return Promise.reject({status:404, msg:'Not Found'})
@@ -42,10 +40,9 @@ exports.fetchArticles = (countData, sort_by = 'created_at DESC', order) => {
 
 
     return db.query(`SELECT * FROM articles ORDER BY ${sort_by}`).then((result) => {
-       
         
         result.rows.forEach((article) => {
-            
+            console.log(article);
             article.comment_count = 0;
             for (let i=0; i<countData.length; i++) {
                 if (countData[i].article_id === article.article_id) {
@@ -134,6 +131,28 @@ exports.checkArticle = (id) => {
             return rows
         }) 
  };
+
+ exports.addArticleComments = (countData) => {
+        return db.query(`ALTER TABLE articles
+        ADD count INT;`)
+        .then(() => {
+            fetchArticles(countData, count)
+            .then((result) => {
+                console.log(result);
+            })
+        })
+ };
+
+ exports.fetchTopicArticles = (topic, sort_by) => {
+    let query = "SELECT * FROM articles WHERE topic = $1 ORDER BY $2 DESC"
+
+    return db.query(query,[topic, sort_by])
+    .then(({rows}) => {
+        return rows
+    })
+ };
+
+ 
 
 
 
