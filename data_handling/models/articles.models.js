@@ -143,10 +143,9 @@ exports.checkArticle = (id) => {
         })
  };
 
- exports.fetchTopicArticles = (topic, sort_by) => {
-    let query = "SELECT * FROM articles WHERE topic = $1 ORDER BY $2 DESC"
+ exports.fetchTopicArticles = (topic, sortBy) => {
 
-    return db.query(query,[topic, sort_by])
+    return db.query(`SELECT * FROM articles WHERE topic=$1 ORDER BY ${sortBy}`, [topic])
     .then(({rows}) => {
         return rows
     })

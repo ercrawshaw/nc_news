@@ -111,6 +111,7 @@ exports.postArticleComment = (req, res, next) => {
 
     fetchTopicArticles(topic, sort_by)
     .then((result) => {
+        console.log(result);
         res.status(200).send(result)
     })
     

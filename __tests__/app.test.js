@@ -431,16 +431,18 @@ describe('GET /api/users', () => {
 describe('GET /api/users/topic?sort_by=:valid', () => {
     test.only('200 and return ordered topic articles', () => {
         return request(app)
-        .get(`/api/mitch?sort_by=votes`)
+        .get(`/api/mitch?sort_by=created_at ASC`)
         .expect(200)
         .then(({body}) => {
-            expect(body).toBeSortedBy('votes', { descending: true}) 
+            expect(body).toBeSortedBy('created_at', { descending: false}) 
             body.forEach((article) => {
                 expect(article.topic).toBe("mitch")
             })
         })
     })
-})
+});
+
+
 
 
 
